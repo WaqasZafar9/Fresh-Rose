@@ -4,21 +4,227 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="/css/login_register.css">
+    <link rel="stylesheet" href="css/login_register.css">
+    <style>
+        /* Hover animation */
+        .button-hover-animation {
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0.9;
+        }
+
+        .button-hover-animation:hover {
+            transform: scale(1.05);
+            opacity: 1;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: url('images/bg1.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .form-container h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .form-container h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-container form input {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-container form button {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .form-container form button:hover {
+            background-color: #45a049;
+        }
+
+        .form-container p {
+            margin-top: 10px;
+        }
+
+        .form-container a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .form-container a:hover {
+            text-decoration: underline;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
+    <a href="index.html" class="back-button button-hover-animation">Back to Home</a>
     <div class="container">
         <div class="form-container">
-            <h1>Fresh <span style="color: red;"> Rose</span></h1>
+            <h1>Fresh <span style="color: red;">Rose</span></h1>
             <h2>Login</h2>
-            <form action="login_process.php" method="POST">
+            <form id="loginForm">
                 <input type="email" name="email" placeholder="Email" required>
                 <input type="password" name="password" placeholder="Password" required>
-                <button type="submit">Login</button>
+                <button type="submit" class="button-hover-animation">Login</button>
             </form>
-            <p>Don't have an account? <a href="register.html">Sign up</a></p>
+            <p>Don't have an account? <a href="register.php">Sign up</a></p>
         </div>
-        <div class="image-container"></div>
     </div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modalMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            var formData = new FormData(this);
+
+            fetch("login_process.php", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                var modal = document.getElementById("myModal");
+                var modalMessage = document.getElementById("modalMessage");
+
+                modalMessage.textContent = data.message;
+
+                if (data.status === "success") {
+                    modalMessage.style.color = "green";
+                    setTimeout(function() {
+                        window.location.href = "booking.php";
+                    }, 1000);
+                } else {
+                    modalMessage.style.color = "red";
+                }
+
+                modal.style.display = "flex";
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                var modal = document.getElementById("myModal");
+                var modalMessage = document.getElementById("modalMessage");
+                modalMessage.textContent = "An unexpected error occurred.";
+                modalMessage.style.color = "red";
+                modal.style.display = "flex";
+            });
+        });
+
+        document.querySelector(".close").onclick = function() {
+            document.getElementById("myModal").style.display = "none";
+        };
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById("myModal")) {
+                document.getElementById("myModal").style.display = "none";
+            }
+        };
+    </script>
 </body>
 </html>

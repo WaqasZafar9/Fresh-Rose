@@ -1,3 +1,11 @@
+<?php
+include('session_start.php');
+if (!isset($_SESSION['id'])) {
+    header("Location: login.html");
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -80,18 +88,13 @@
                   </li>
                   <li>
                     <a href="#" class="pl-3 pr-3 text-black"
-                      ><span class="icon-twitter"></span
-                    ></a>
-                  </li>
-                  <li>
-                    <a href="#" class="pl-3 pr-3 text-black"
                       ><span class="icon-instagram"></span
                     ></a>
                   </li>
-                  <li>
-                    <a href="#" class="pl-3 pr-3 text-black"
-                      ><span class="icon-youtube-play"></span
-                    ></a>
+                  <li class="ml-3">
+                    <a href="logut.php" class="btn btn-primary text-white"
+                      >Logout</a
+                    >
                   </li>
                 </ul>
               </div>
@@ -135,7 +138,7 @@
         <div class="container">
           <div class="row">
             <div class="col-md-7 mb-5">
-              <form action="#" class="p-5 bg-white" name="Bookings">
+              <form class="p-5 bg-white" name="Bookings">
                 <h2 class="mb-4 site-section-heading">Book Now</h2>
                 <div class="row form-group">
                   <div class="col-md-6 mb-3 mb-md-0">
@@ -402,7 +405,7 @@
               text: "We got your details, Now you will be redirect to Whatsapp, Please Wait",
               icon: "success",
               showConfirmButton: false,
-              timer: 2000,
+              timer: 1000,
               willClose: () => {
                 sendToWhatsapp(
                   firstName,
@@ -447,6 +450,34 @@
 
         window.location.href = url;
       }
+      document.addEventListener('DOMContentLoaded', function () {
+            const loginButton = document.getElementById('loginButton');
+            const logoutButton = document.getElementById('logoutButton');
+
+            // Function to update the button visibility
+            function updateButtons() {
+                fetch('login_status.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.isLoggedIn) {
+                        loginButton.style.display = 'none';
+                        logoutButton.style.display = 'block';
+                    } else {
+                        loginButton.style.display = 'block';
+                        logoutButton.style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+
+            // Initial button visibility update
+            updateButtons();
+        });
     </script>
   </body>
 </html>

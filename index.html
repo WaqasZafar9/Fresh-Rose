@@ -67,14 +67,18 @@
         <div class="site-mobile-menu-body"></div>
       </div>
 
+      <?php
+      session_start();
+      ?>
+
       <header class="site-navbar py-1" role="banner">
         <div class="container-fluid">
           <div class="row align-items-center">
             <div class="col-6 col-xl-2" data-aos="fade-down">
               <h1 class="mb-0">
-                <a href="index.html" class="text-black h2 mb-0"
-                  >Fresh <span style="color: red">Rose</span></a
-                >
+                <a href="index.php" class="text-black h2 mb-0">
+                  Fresh <span style="color: red">Rose</span>
+                </a>
               </h1>
             </div>
             <div class="col-10 col-md-8 d-none d-xl-block" data-aos="fade-down">
@@ -86,7 +90,7 @@
                   <li><a href="index.html">Home</a></li>
                   <li><a href="services.html">Services</a></li>
                   <li><a href="about.html">About</a></li>
-                  <li><a href="booking.html">Book Online</a></li>
+                  <li><a href="booking.php">Book Online</a></li>
                   <li><a href="contact.html">Contact</a></li>
                 </ul>
               </nav>
@@ -98,22 +102,23 @@
                   data-class="social"
                 >
                   <li>
-                    <a href="#" class="pl-0 pr-2 text-black"
+                    <a
+                      href="#"
+                      class="pl-0 pr-2 text-black button-hover-animation"
                       ><span class="icon-facebook"></span
                     ></a>
                   </li>
-
                   <li>
-                    <a href="#" class="pl-1 pr-2 text-black"
+                    <a
+                      href="#"
+                      class="pl-1 pr-2 text-black button-hover-animation"
                       ><span class="icon-instagram"></span
                     ></a>
                   </li>
-
-                  <li class="ml-3">
-                    <a href="login.html" class="btn btn-primary text-white"
-                      >Login</a
-                    >
-                  </li>
+                  <li class="nav-item">
+                    <a id="loginButton" href="login.html" class="btn btn-primary text-white">Login</a>
+                    <a id="logoutButton" href="logut.php" class="btn btn-primary text-white" style="display: none;">Logout</a>
+                </li>
                 </ul>
               </div>
               <div
@@ -150,7 +155,7 @@
 
                 <p>
                   <a
-                    href="booking.html"
+                    href="booking.php"
                     class="btn btn-black py-3 px-5 button-hover-animation"
                     >Book Now!</a
                   >
@@ -177,7 +182,7 @@
 
                 <p>
                   <a
-                    href="booking.html"
+                    href="booking.php"
                     class="btn btn-black py-3 px-5 button-hover-animation"
                     >Book Now!</a
                   >
@@ -275,7 +280,7 @@
                 </p>
                 <p class="mb-0">
                   <a
-                    href="booking.html"
+                    href="booking.php"
                     class="btn btn-primary py-3 px-5 text-white button-hover-animation"
                   >
                     Book Now >>
@@ -295,7 +300,7 @@
                 </p>
                 <p class="mb-0">
                   <a
-                    href="booking.html"
+                    href="booking.php"
                     class="btn btn-primary py-3 px-5 text-white button-hover-animation"
                     >Book Now >>
                   </a>
@@ -314,7 +319,7 @@
                 </p>
                 <p class="mb-0">
                   <a
-                    href="booking.html"
+                    href="booking.php"
                     class="btn btn-primary py-3 px-5 text-white button-hover-animation"
                     >Book Now >>
                   </a>
@@ -352,7 +357,7 @@
       </div>
 
       <div
-        class="site-blocks-cover overlay inner-page-cover "
+        class="site-blocks-cover overlay inner-page-cover"
         style="
           background-image: url(images/bg2.jpg);
           background-attachment: fixed;
@@ -405,7 +410,7 @@
                 </div>
                 <div class="col-md-6 col-lg-6">
                   <ul class="list-unstyled">
-                    <li><a href="booking.html">Booking</a></li>
+                    <li><a href="booking.php">Booking</a></li>
                     <li><a href="privacy.html">Privacy Policy</a></li>
                     <li><a href="terms.html">Terms of Service</a></li>
                   </ul>
@@ -477,5 +482,35 @@
     <script src="/Fresh Rose/js/loader.js"></script>
     <script src="js/main.js"></script>
     <script src="js/scroll-animation.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          const loginButton = document.getElementById('loginButton');
+          const logoutButton = document.getElementById('logoutButton');
+
+          // Function to update the button visibility
+          function updateButtons() {
+              fetch('login_status.php', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  }
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.isLoggedIn) {
+                      loginButton.style.display = 'none';
+                      logoutButton.style.display = 'block';
+                  } else {
+                      loginButton.style.display = 'block';
+                      logoutButton.style.display = 'none';
+                  }
+              })
+              .catch(error => console.error('Error:', error));
+          }
+
+          // Initial button visibility update
+          updateButtons();
+      });
+  </script>
   </body>
 </html>
