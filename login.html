@@ -194,14 +194,12 @@
                 var modalMessage = document.getElementById("modalMessage");
 
                 modalMessage.textContent = data.message;
+                modalMessage.style.color = data.status === "success" ? "green" : "red";
 
                 if (data.status === "success") {
-                    modalMessage.style.color = "green";
                     setTimeout(function() {
                         window.location.href = "booking.php";
                     }, 1000);
-                } else {
-                    modalMessage.style.color = "red";
                 }
 
                 modal.style.display = "flex";

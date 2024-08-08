@@ -1,5 +1,5 @@
 <?php
-require_once 'db.php';
+require_once 'db.php'; // Ensure this file initializes $mysqli
 session_start();
 header('Content-Type: application/json');
 

@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="form-container">
             <h1>Fresh <span style="color:red;">Rose</span></h1>
             <h2>Register</h2>
-            <form method="post" action="register.php">
+            <form id="registerForm" method="post" action="register.php" onsubmit="return validateForm()">
                 <?php include('error.php'); ?>
                 <input type="text" name="first_name" placeholder="First Name" value="<?php echo $first_name; ?>" required>
                 <input type="text" name="last_name" placeholder="Last Name" value="<?php echo $last_name; ?>" required>
@@ -148,55 +148,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
     <script>
-        function validateForm(event) {
-            event.preventDefault(); // Prevent form from submitting
-
+        function validateForm() {
             // Get form elements
             const firstName = document.querySelector('input[name="first_name"]').value.trim();
             const lastName = document.querySelector('input[name="last_name"]').value.trim();
             const email = document.querySelector('input[name="email"]').value.trim();
             const password = document.querySelector('input[name="password"]').value;
 
-            // Get error message element
-            const errorContainer = document.getElementById('error-container');
-            errorContainer.innerHTML = '';
-
-            let valid = true;
-
-            // Check for empty fields
-            if (firstName === '') {
-                errorContainer.innerHTML += '<p>First name is required.</p>';
-                valid = false;
+            // Validate fields
+            if (!firstName || !lastName || !email || !password) {
+                alert('All fields are required.');
+                return false;
             }
 
-            if (lastName === '') {
-                errorContainer.innerHTML += '<p>Last name is required.</p>';
-                valid = false;
+            if (!validateEmail(email)) {
+                alert('Invalid email format.');
+                return false;
             }
 
-            if (email === '') {
-                errorContainer.innerHTML += '<p>Email is required.</p>';
-                valid = false;
-            } else if (!validateEmail(email)) {
-                errorContainer.innerHTML += '<p>Invalid email format.</p>';
-                valid = false;
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters long.');
+                return false;
             }
 
-            if (password === '') {
-                errorContainer.innerHTML += '<p>Password is required.</p>';
-                valid = false;
-            } else if (password.length < 6) {
-                errorContainer.innerHTML += '<p>Password must be at least 6 characters long.</p>';
-                valid = false;
-            }
+            // Clear form fields after successful validation
+            setTimeout(() => {
+                document.getElementById('registerForm').reset();
+            }, 0);
 
-            if (valid) {
-                document.getElementById('registerForm').submit();
-            }
+            return true;
         }
 
         function validateEmail(email) {
-            // Regular expression for validating email format
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return re.test(email);
         }
